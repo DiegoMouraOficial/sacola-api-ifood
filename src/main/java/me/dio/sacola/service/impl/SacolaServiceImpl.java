@@ -1,5 +1,6 @@
 package me.dio.sacola.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +8,6 @@ import me.dio.sacola.enumeration.FormaPagamento;
 import me.dio.sacola.model.Item;
 import me.dio.sacola.model.Restaurante;
 import me.dio.sacola.model.Sacola;
-import me.dio.sacola.repository.ItemRepository;
 import me.dio.sacola.repository.ProdutoRepository;
 import me.dio.sacola.repository.SacolaRepository;
 import me.dio.sacola.resource.dto.ItemDto;
@@ -18,8 +18,6 @@ import me.dio.sacola.service.SacolaService;
 public class SacolaServiceImpl implements SacolaService {
     private final SacolaRepository sacolaRepository;
     private final ProdutoRepository produtoRepository;
-    private final ItemRepository itemRepository;
-
 
     @Override
     public Item incluirItemNaSacola(ItemDto itemDto) {
@@ -52,12 +50,21 @@ public class SacolaServiceImpl implements SacolaService {
                         "Não é possível adicionar produtos de restaurante diferentes. Fecche a sacola ou esvazie.");
             }
         }
+
+        List<Double> valorDosItens = new ArrayList<>();
+        for (Item ItemDaSacola : itensDaSacola) {
+            double valorTotalItem = ItemDaSacola.getProduto().getValorUnitario() * ItemDaSacola.getQuantidade();
+            valorDosItens.add(valorTotalItem);
+        }
+
+        double valorTotalSacola = valorDosItens.stream()
+                .mapToDouble(valorTotalDeCadaItem -> valorTotalDeCadaItem)
+                .sum();
+
+        sacola.setValorTotal(valorTotalSacola);
         sacolaRepository.save(sacola);
-        return itemRepository.save(itemParaSerInserido);
+        return itemParaSerInserido;
     }
-
-
-
 
     @Override
     public Sacola verSacola(Long id) {
@@ -66,8 +73,6 @@ public class SacolaServiceImpl implements SacolaService {
                     throw new RuntimeException("Essa sacola não existe!");
                 });
     }
-
-
 
     @Override
     public Sacola fecharSacola(Long id, int numeroformaPagamento) {
