@@ -28,7 +28,7 @@ de um carrinho de compra para e-commerce estilo do iFood </p>
   <ul> - Postman e Swagger (Documentação).</ul>
   </ol>
 
-<h2> ⚠️ Como rodar o projeto </h2>
+<h2> ⚠️ Como rodar o projeto?</h2>
   <ol>
   <li> Faça o clone do projeto no seu terminal: git clone https://github.com/ProgrammerCodeOficial/SacolaApi-IFOOD.git </li>
   <li> No terminal entre na pasta raiz: cd sacola-api para acessar na IDE. </li>
